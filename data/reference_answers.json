@@ -1,0 +1,906 @@
+{
+    "Q1": {
+        "a": {},
+        "b": {},
+        "c": {},
+        "d": {}
+    },
+    "Q2": {
+        "a": {},
+        "b": {},
+        "c": {},
+        "d": {}
+    },
+    "raw": [
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "Theory of Computation"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "Questions with Worked Solutions"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "Finite Automata  \u00b7  Context-Free Grammars  \u00b7  Pushdown Automata        Total: 36 marks"
+        },
+        {
+            "type": "paragraph",
+            "style": "Heading 1",
+            "text": "1. Finite Automata: Time-Machine Paradox Checker (12 marks)"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "A time machine logs every action over \u03a3 = {p, f, h}:"
+        },
+        {
+            "type": "paragraph",
+            "style": "List Paragraph",
+            "text": "p: jump into the past"
+        },
+        {
+            "type": "paragraph",
+            "style": "List Paragraph",
+            "text": "f: jump into the future"
+        },
+        {
+            "type": "paragraph",
+            "style": "List Paragraph",
+            "text": "h: hold position"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "A trip log is paradox-free if all three rules hold:"
+        },
+        {
+            "type": "paragraph",
+            "style": "List Paragraph",
+            "text": "A jump into the past is never immediately followed by a jump into the future. There is no \"pf\" substring, because the machine suffers temporal whiplash."
+        },
+        {
+            "type": "paragraph",
+            "style": "List Paragraph",
+            "text": "The number of past-jumps is even. Otherwise a copy of the traveller is stranded in the past."
+        },
+        {
+            "type": "paragraph",
+            "style": "List Paragraph",
+            "text": "The log ends with h, because the machine must be stationary to land."
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "Valid: \"h\", \"fh\", \"pph\", \"phph\", \"phfph\""
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "Invalid: \"\", \"ph\", \"ppfh\", \"pphf\", \"pphp\""
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "(a)  Construct a DFA for paradox-free logs. Label every state with what it remembers, and include the dead state.  [4 marks]"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "ANSWER"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "To check the three rules, the DFA tracks three things: the parity of p's, whether the last symbol was p (to catch \"pf\"), and whether the last symbol was h (for the \"must end with h\" rule)."
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "Only B is accepting. Reading p flips the parity and moves to a \"last was p\" state. Reading f right after p goes to the dead state G."
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "Figure 1. DFA for paradox-free logs (7 states, B accepting, G dead)"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "Trace of \"phfph\": A \u2192p F \u2192h E \u2192f D \u2192p C \u2192h B. This is accepted \u2713."
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "Trace of \"ppfh\": A \u2192p F \u2192p C \u2192f G \u2192h G. This is rejected \u2713."
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "(b)  Minimize your DFA using the table-filling method. How many states does the minimal DFA have?  [2 marks]"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "ANSWER"
+        },
+        {
+            "type": "paragraph",
+            "style": "List Paragraph",
+            "text": "Round 0: B is accepting and everything else is not, so mark (B, every other state)."
+        },
+        {
+            "type": "paragraph",
+            "style": "List Paragraph",
+            "text": "Round 1: on h, the pairs (A,D), (A,E), (A,F), (A,G), (C,D), (C,E), (C,F) and (C,G) all lead to (B, non-B), which is already marked, so mark them."
+        },
+        {
+            "type": "paragraph",
+            "style": "List Paragraph",
+            "text": "Round 2: (A,C) is marked, because on f it goes to (A,G). (D,G), (E,G) and (F,G) are marked, because on p they go to (C,G)."
+        },
+        {
+            "type": "paragraph",
+            "style": "List Paragraph",
+            "text": "Round 3: (D,F) and (E,F) are marked, because on f they go to (D,G) and (E,G)."
+        },
+        {
+            "type": "paragraph",
+            "style": "List Paragraph",
+            "text": "Left unmarked: only (D, E). They have identical transitions and are both non-accepting, so D \u2261 E."
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "The minimal DFA has 6 states: A, B, C, F, {D,E}, G."
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "Figure 2. Minimal DFA (6 states) after merging D and E"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "(c)  The regulator adds a stricter rule: every past-jump must be repaid by exactly one future-jump, with all past-jumps first, then all future-jumps, then a final hold. This gives L_rep = { p\u207f f\u207f h | n \u2265 1 }. Prove L_rep is not regular using the Pumping Lemma.  [4 marks]"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "ANSWER"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "Assume L_rep is regular with pumping length m. Take w = p\u1d50f\u1d50h, so |w| \u2265 m. Split w = xyz with |xy| \u2264 m and |y| \u2265 1."
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "Since |xy| \u2264 m, both x and y lie inside the p-block, so y = p\u1d4f with 1 \u2264 k \u2264 m. Pump with i = 2:"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "xy\u00b2z = p\u1d50\u207a\u1d4f f\u1d50 h"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "This has more p's than f's, so it is not in L_rep. That contradicts the Pumping Lemma, so L_rep is not regular \u220e"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "(d)  A colleague claims L_bal = { w \u2208 {p,f,h}* | #p(w) = #f(w) } is regular. Refute this using closure under intersection with p*f*.  [2 marks]"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "ANSWER"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "Intersect L_bal with the regular language p*f*:"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "L_bal \u2229 p*f* = { p\u207ff\u207f | n \u2265 0 }"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "This language is not regular, by the same pumping argument as in (c). Regular languages are closed under intersection, and p*f* is regular. If L_bal were regular, the intersection would be regular too, which is a contradiction. So L_bal is not regular \u220e"
+        },
+        {
+            "type": "paragraph",
+            "style": "Heading 1",
+            "text": "2. Context-Free Grammar: Treasure Hunter's Cave Diary (12 marks)"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "An explorer's diary is written over \u03a3 = {e, x, t, m}:"
+        },
+        {
+            "type": "paragraph",
+            "style": "List Paragraph",
+            "text": "e: enter a cave"
+        },
+        {
+            "type": "paragraph",
+            "style": "List Paragraph",
+            "text": "x: exit the cave you are currently in"
+        },
+        {
+            "type": "paragraph",
+            "style": "List Paragraph",
+            "text": "t: find a treasure"
+        },
+        {
+            "type": "paragraph",
+            "style": "List Paragraph",
+            "text": "m: meet a monster"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "A diary is valid if all three rules hold:"
+        },
+        {
+            "type": "paragraph",
+            "style": "List Paragraph",
+            "text": "It consists of one or more complete caves in sequence. Every cave entered is exited, and you never exit without entering. Caves can be nested inside other caves."
+        },
+        {
+            "type": "paragraph",
+            "style": "List Paragraph",
+            "text": "Treasures and monsters occur only inside a cave."
+        },
+        {
+            "type": "paragraph",
+            "style": "List Paragraph",
+            "text": "Every cave contains at least one treasure found directly in it. A treasure found only inside a deeper nested cave doesn't count for the outer cave. Monsters can be met anywhere inside a cave."
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "Valid: \"etx\", \"emtx\", \"etmtx\", \"etxetx\", \"eetxtx\", \"emetxtx\""
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "Invalid: \"\", \"ex\", \"emx\", \"eetxx\", \"tx\", \"etxx\", \"etxm\""
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "(a)  Construct a CFG for valid diaries. Explain the role of each non-terminal.  [5 marks]"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "ANSWER"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "D \u2192 C D | C"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "C \u2192 e A t B x"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "A \u2192 m A | C A | \u03b5"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "B \u2192 t B | m B | C B | \u03b5"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "The \"A t B\" shape forces every cave to have a direct treasure. The nested caves inside A and B are whole C's, so their treasures are never counted for the outer cave. This grammar is also unambiguous, as part (c) shows."
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "(b)  Give a leftmost derivation and a parse tree for \"emetxtx\".  [2 marks]"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "ANSWER"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "Leftmost derivation"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "D \u21d2 C                          (D \u2192 C)"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "  \u21d2 e A t B x                  (C \u2192 e A t B x)"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "  \u21d2 e m A t B x                (A \u2192 m A)"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "  \u21d2 e m C A t B x              (A \u2192 C A)"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "  \u21d2 e m e A t B x A t B x      (C \u2192 e A t B x)"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "  \u21d2 e m e t B x A t B x        (A \u2192 \u03b5)"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "  \u21d2 e m e t x A t B x          (B \u2192 \u03b5)"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "  \u21d2 e m e t x t B x            (A \u2192 \u03b5)"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "  \u21d2 e m e t x t x              (B \u2192 \u03b5)"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "Parse tree"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "Figure 3. Parse tree for \"emetxtx\" (yield: e m e t x t x)"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "(c)  A junior writes this grammar:  [3 marks]"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "D \u2192 C D | C"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "C \u2192 e X t X x"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "X \u2192 C X | t X | m X | \u03b5"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "Show that it is ambiguous by drawing two parse trees for \"ettx\". Then give an unambiguous grammar for the same language."
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "ANSWER"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "For \"ettx\", the grammar can't tell which t is \"the required treasure\"."
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "Leftmost derivation 1 (first t is the required one):"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "D \u21d2 C \u21d2 e X t X x \u21d2 e t X x \u21d2 e t t X x \u21d2 e t t x"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "Leftmost derivation 2 (second t is the required one):"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "D \u21d2 C \u21d2 e X t X x \u21d2 e t X t X x \u21d2 e t t X x \u21d2 e t t x"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "The two derivations use different rules, so they give two different parse trees for the same string, and the grammar is ambiguous \u220e"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "Unambiguous replacement: the grammar from (a). In \"e A t B x\", A can never produce a direct t, so the t in the middle is always the first direct treasure. A and B each split the contents into items (m, t or a whole cave) in only one way. So every valid diary has exactly one parse tree."
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "(d)  Let L be the language of valid diaries. Prove L is not regular by intersecting it with e*(tx)* and applying the Pumping Lemma to the result.  [2 marks]"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "ANSWER"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "Intersect L with the regular language e*(tx)*."
+        },
+        {
+            "type": "paragraph",
+            "style": "List Paragraph",
+            "text": "A string e^a (tx)^b is balanced only when a = b, and a \u2265 1 is needed because the empty diary is invalid."
+        },
+        {
+            "type": "paragraph",
+            "style": "List Paragraph",
+            "text": "Every such string is valid. In e\u207f(tx)\u207f, the innermost cave contains a t, and each outer cave gets its own t right after the inner cave closes. For example, n = 2 gives \"eetxtx\"."
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "So L \u2229 e*(tx)* = { e\u207f(tx)\u207f | n \u2265 1 }."
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "Assume this is regular with pumping length m, and take w = e\u1d50(tx)\u1d50. Since |xy| \u2264 m, y = e\u1d4f with k \u2265 1. Pumping gives e\u1d50\u207a\u1d4f(tx)\u1d50, which has more e's than x's, so it is not in the language. That is a contradiction."
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "Regular languages are closed under intersection with regular languages. If L were regular, the intersection would be regular. So L is not regular \u220e"
+        },
+        {
+            "type": "paragraph",
+            "style": "Heading 1",
+            "text": "3. Pushdown Automata: The Apothecary's Cauldron (12 marks)"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "An apothecary logs what goes into a cauldron over \u03a3 = {h, m, a}:"
+        },
+        {
+            "type": "paragraph",
+            "style": "List Paragraph",
+            "text": "h: add a healing herb"
+        },
+        {
+            "type": "paragraph",
+            "style": "List Paragraph",
+            "text": "m: add a mandrake root"
+        },
+        {
+            "type": "paragraph",
+            "style": "List Paragraph",
+            "text": "a: add one drop of antidote"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "The cauldron is stable if every ingredient (h or m) is neutralised by exactly one antidote drop, i.e. #h + #m = #a. The order is free: the apothecary may pre-treat the cauldron with antidote before adding an ingredient, or add the antidote afterwards."
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "Valid: \"ha\", \"ah\", \"hmaa\", \"aahm\", \"ahmaha\""
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "Invalid: \"h\", \"aa\", \"hma\", \"ahhm\""
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "(a)  Construct a PDA for stable logs and specify \u03b4. Note that the stack must handle the cauldron being \"ahead\" of antidote (ingredients waiting) and \"behind\" (antidote waiting).  [5 marks]"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "ANSWER"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "The stack holds the \"debt\" in whichever direction it currently runs. It holds X's when ingredients are waiting for antidote, and Y's when antidote is waiting for ingredients."
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "M = (Q, \u03a3, \u0393, \u03b4, q\u2080, Z\u2080, F), with Q = {q\u2080, q_X, q_Y}, \u03a3 = {h, m, a}, \u0393 = {Z\u2080, X, Y}, F = {q\u2080}."
+        },
+        {
+            "type": "paragraph",
+            "style": "List Paragraph",
+            "text": "q\u2080: balanced, stack = Z\u2080 only"
+        },
+        {
+            "type": "paragraph",
+            "style": "List Paragraph",
+            "text": "q_X: ingredients ahead"
+        },
+        {
+            "type": "paragraph",
+            "style": "List Paragraph",
+            "text": "q_Y: antidote ahead"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "Below, c stands for either h or m."
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "Figure 4. Transition diagram of the PDA (edge label: input, stack top / replacement)"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "(b)  State whether your PDA accepts by final state or empty stack, and say whether it is deterministic. Justify both.  [2 marks]"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "ANSWER"
+        },
+        {
+            "type": "paragraph",
+            "style": "List Paragraph",
+            "text": "It accepts by final state (q\u2080)."
+        },
+        {
+            "type": "paragraph",
+            "style": "List Paragraph",
+            "text": "Why not empty stack? The language is not prefix-free: \"ha\" \u2208 L and \"haha\" \u2208 L. A deterministic PDA that empties its stack after \"ha\" has nothing left to read the rest of \"haha\". Final-state acceptance avoids this."
+        },
+        {
+            "type": "paragraph",
+            "style": "List Paragraph",
+            "text": "It is deterministic. For every (state, stack-top) pair, either only \u03b5-moves exist or only input moves exist, with at most one move per symbol:"
+        },
+        {
+            "type": "paragraph",
+            "style": "List Paragraph",
+            "text": "(q\u2080, Z\u2080) has input moves only."
+        },
+        {
+            "type": "paragraph",
+            "style": "List Paragraph",
+            "text": "(q_X, X) and (q_Y, Y) have input moves only."
+        },
+        {
+            "type": "paragraph",
+            "style": "List Paragraph",
+            "text": "(q_X, Z\u2080) and (q_Y, Z\u2080) have a single \u03b5-move only."
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "(c)  Show the sequence of instantaneous descriptions (IDs) for \"ahmaha\" (accepted) and \"hma\" (rejected).  [3 marks]"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "ANSWER"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "Each ID is (state, remaining input, stack with top on the left)."
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "\"ahmaha\" (accepted)"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "(q\u2080, ahmaha, Z\u2080)"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "\u22a2 (q_Y, hmaha, Y Z\u2080)    rule 2"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "\u22a2 (q_Y, maha,  Z\u2080)      rule 7  (h cancels the antidote)"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "\u22a2 (q\u2080,  maha,  Z\u2080)      rule 8  (\u03b5)"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "\u22a2 (q_X, aha,   X Z\u2080)    rule 1"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "\u22a2 (q_X, ha,    Z\u2080)      rule 4"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "\u22a2 (q\u2080,  ha,    Z\u2080)      rule 5  (\u03b5)"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "\u22a2 (q_X, a,     X Z\u2080)    rule 1"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "\u22a2 (q_X, \u03b5,     Z\u2080)      rule 4"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "\u22a2 (q\u2080,  \u03b5,     Z\u2080)      rule 5  (\u03b5)"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "The input is consumed and the machine is in q\u2080 \u2208 F, so it is accepted \u2713."
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "\"hma\" (rejected)"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "(q\u2080, hma, Z\u2080)"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "\u22a2 (q_X, ma, X Z\u2080)       rule 1"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "\u22a2 (q_X, a,  X X Z\u2080)     rule 3"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "\u22a2 (q_X, \u03b5,  X Z\u2080)       rule 4"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "The input is consumed in q_X, which is not final, and no \u03b5-move applies with X on top. So it is rejected \u2713."
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "(d)  A rival apothecary demands that the three counts be individually equal, so L\u2032 = { w | #h(w) = #m(w) = #a(w) }. Prove L\u2032 is not context-free by intersecting it with h*m*a* and applying the CFL Pumping Lemma to h\u1d56m\u1d56a\u1d56.  [2 marks]"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "ANSWER"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "Intersect L\u2032 with the regular language h*m*a*:"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "L\u2032 \u2229 h*m*a* = { h\u207fm\u207fa\u207f | n \u2265 0 }"
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "If L\u2032 were context-free, this intersection would be too, because CFLs are closed under intersection with regular languages. Assume it is context-free with pumping length p, and take s = h\u1d56m\u1d56a\u1d56. Split s = uvxyz with |vxy| \u2264 p and |vy| \u2265 1."
+        },
+        {
+            "type": "paragraph",
+            "style": "List Paragraph",
+            "text": "Between the last h and the first a there are p m's. A window of length \u2264 p therefore cannot touch both an h and an a, so vxy misses at least one of the three letters."
+        },
+        {
+            "type": "paragraph",
+            "style": "List Paragraph",
+            "text": "Pumping with i = 2 increases the count of at least one letter and leaves the count of the missed letter at p. The three counts are no longer equal."
+        },
+        {
+            "type": "paragraph",
+            "style": "Normal",
+            "text": "So uv\u00b2xy\u00b2z \u2209 the language, which is a contradiction. Hence L\u2032 is not context-free \u220e"
+        },
+        {
+            "type": "table",
+            "data": [
+                [
+                    "State",
+                    "Meaning",
+                    "on p",
+                    "on f",
+                    "on h"
+                ],
+                [
+                    "\u2192 A",
+                    "even #p, last symbol is neither p nor h (start, or just read f)",
+                    "F",
+                    "A",
+                    "B"
+                ],
+                [
+                    "B (accepting)",
+                    "even #p, last symbol is h",
+                    "F",
+                    "A",
+                    "B"
+                ],
+                [
+                    "C",
+                    "even #p, last symbol is p",
+                    "F",
+                    "G",
+                    "B"
+                ],
+                [
+                    "D",
+                    "odd #p, last symbol is f",
+                    "C",
+                    "D",
+                    "E"
+                ],
+                [
+                    "E",
+                    "odd #p, last symbol is h",
+                    "C",
+                    "D",
+                    "E"
+                ],
+                [
+                    "F",
+                    "odd #p, last symbol is p",
+                    "C",
+                    "G",
+                    "E"
+                ],
+                [
+                    "G",
+                    "dead (a \"pf\" has occurred)",
+                    "G",
+                    "G",
+                    "G"
+                ]
+            ]
+        },
+        {
+            "type": "table",
+            "data": [
+                [
+                    "Non-terminal",
+                    "Role"
+                ],
+                [
+                    "D",
+                    "the whole diary, one or more complete caves in sequence"
+                ],
+                [
+                    "C",
+                    "one cave: e, then contents, then x"
+                ],
+                [
+                    "A",
+                    "the stuff before the cave's first direct treasure: monsters and whole nested caves, but no direct t"
+                ],
+                [
+                    "B",
+                    "anything after that first direct treasure: t, m or whole caves"
+                ]
+            ]
+        },
+        {
+            "type": "table",
+            "data": [
+                [
+                    "\nTree 1: first t is the required treasure",
+                    "\nTree 2: second t is the required treasure"
+                ]
+            ]
+        },
+        {
+            "type": "table",
+            "data": [
+                [
+                    "#",
+                    "Transition",
+                    "Meaning"
+                ],
+                [
+                    "1",
+                    "\u03b4(q\u2080, c, Z\u2080) = {(q_X, X Z\u2080)}",
+                    "first ingredient from balance"
+                ],
+                [
+                    "2",
+                    "\u03b4(q\u2080, a, Z\u2080) = {(q_Y, Y Z\u2080)}",
+                    "first antidote from balance"
+                ],
+                [
+                    "3",
+                    "\u03b4(q_X, c, X) = {(q_X, X X)}",
+                    "another ingredient, push"
+                ],
+                [
+                    "4",
+                    "\u03b4(q_X, a, X) = {(q_X, \u03b5)}",
+                    "antidote cancels an ingredient, pop"
+                ],
+                [
+                    "5",
+                    "\u03b4(q_X, \u03b5, Z\u2080) = {(q\u2080, Z\u2080)}",
+                    "last X popped, back to balanced"
+                ],
+                [
+                    "6",
+                    "\u03b4(q_Y, a, Y) = {(q_Y, Y Y)}",
+                    "another antidote, push"
+                ],
+                [
+                    "7",
+                    "\u03b4(q_Y, c, Y) = {(q_Y, \u03b5)}",
+                    "ingredient cancels an antidote, pop"
+                ],
+                [
+                    "8",
+                    "\u03b4(q_Y, \u03b5, Z\u2080) = {(q\u2080, Z\u2080)}",
+                    "last Y popped, back to balanced"
+                ]
+            ]
+        }
+    ]
+}

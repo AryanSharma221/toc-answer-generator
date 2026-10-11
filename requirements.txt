@@ -1,0 +1,12 @@
+streamlit
+graphviz
+nltk
+automata-lib
+weasyprint
+beautifulsoup4
+pydantic
+python-docx
+fpdf2
+google-generativeai
+python-dotenv
+playwright

@@ -1,0 +1,76 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment variables & secrets (CRITICAL)
+.env
+*.env
+.env.local
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Streamlit runtime & cache
+.streamlit/secrets.toml
+
+# Generated reports & diagrams
+output/
+*.log
+
+# Test & coverage caches
+.pytest_cache/
+.coverage
+htmlcov/
+test_st_html_dump.html
+
+# IDE / Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Temporary scratch and patch scripts in root directory ONLY
+/patch_*.py
+/fix*.py
+/debug_*.*
+/dump_*.*
+/dump.txt
+/take_*.py
+/e2e_*.py
+/add_*.py
+/update_*.py
+/verify_*.py
+/refine_*.py
+/replace_*.py
+/test_*.py
+/test_*.html
+/*.png
+/*.pdf
+/*.txt
+!requirements.txt
+/*.html
+/*.zip
+/data/q_a_unzipped/
+/RECOVERED*
+/TRUE_ORIGINAL_APP.py
+/playwright_test_all.py
+/inject_val.py
+/bypass_ai_cfg.py
+/create_test_zoom.py
+/embed_b64.py
+/get_error.py
+/run_full_regression_suite.py
+/COMPLETENESS_AUDIT_REPORT.md
+/DEFECT_REPORT.md
+/End_To_End_Audit_Report.md

@@ -1,0 +1,252 @@
+[
+    {
+        "type": "paragraph",
+        "style": "Normal",
+        "text": "Theory of Computation"
+    },
+    {
+        "type": "paragraph",
+        "style": "Normal",
+        "text": "Question Paper"
+    },
+    {
+        "type": "paragraph",
+        "style": "Normal",
+        "text": "Finite Automata  \u00b7  Context-Free Grammars  \u00b7  Pushdown Automata        Total: 36 marks"
+    },
+    {
+        "type": "paragraph",
+        "style": "Heading 1",
+        "text": "1. Finite Automata: Time-Machine Paradox Checker (12 marks)"
+    },
+    {
+        "type": "paragraph",
+        "style": "Normal",
+        "text": "A time machine logs every action over \u03a3 = {p, f, h}:"
+    },
+    {
+        "type": "paragraph",
+        "style": "List Paragraph",
+        "text": "p: jump into the past"
+    },
+    {
+        "type": "paragraph",
+        "style": "List Paragraph",
+        "text": "f: jump into the future"
+    },
+    {
+        "type": "paragraph",
+        "style": "List Paragraph",
+        "text": "h: hold position"
+    },
+    {
+        "type": "paragraph",
+        "style": "Normal",
+        "text": "A trip log is paradox-free if all three rules hold:"
+    },
+    {
+        "type": "paragraph",
+        "style": "List Paragraph",
+        "text": "A jump into the past is never immediately followed by a jump into the future. There is no \"pf\" substring, because the machine suffers temporal whiplash."
+    },
+    {
+        "type": "paragraph",
+        "style": "List Paragraph",
+        "text": "The number of past-jumps is even. Otherwise a copy of the traveller is stranded in the past."
+    },
+    {
+        "type": "paragraph",
+        "style": "List Paragraph",
+        "text": "The log ends with h, because the machine must be stationary to land."
+    },
+    {
+        "type": "paragraph",
+        "style": "Normal",
+        "text": "Valid: \"h\", \"fh\", \"pph\", \"phph\", \"phfph\""
+    },
+    {
+        "type": "paragraph",
+        "style": "Normal",
+        "text": "Invalid: \"\", \"ph\", \"ppfh\", \"pphf\", \"pphp\""
+    },
+    {
+        "type": "paragraph",
+        "style": "Normal",
+        "text": "(a)  Construct a DFA for paradox-free logs. Label every state with what it remembers, and include the dead state.  [4 marks]"
+    },
+    {
+        "type": "paragraph",
+        "style": "Normal",
+        "text": "(b)  Minimize your DFA using the table-filling method. How many states does the minimal DFA have?  [2 marks]"
+    },
+    {
+        "type": "paragraph",
+        "style": "Normal",
+        "text": "(c)  The regulator adds a stricter rule: every past-jump must be repaid by exactly one future-jump, with all past-jumps first, then all future-jumps, then a final hold. This gives L_rep = { p\u207f f\u207f h | n \u2265 1 }. Prove L_rep is not regular using the Pumping Lemma.  [4 marks]"
+    },
+    {
+        "type": "paragraph",
+        "style": "Normal",
+        "text": "(d)  A colleague claims L_bal = { w \u2208 {p,f,h}* | #p(w) = #f(w) } is regular. Refute this using closure under intersection with p*f*.  [2 marks]"
+    },
+    {
+        "type": "paragraph",
+        "style": "Heading 1",
+        "text": "2. Context-Free Grammar: Treasure Hunter's Cave Diary (12 marks)"
+    },
+    {
+        "type": "paragraph",
+        "style": "Normal",
+        "text": "An explorer's diary is written over \u03a3 = {e, x, t, m}:"
+    },
+    {
+        "type": "paragraph",
+        "style": "List Paragraph",
+        "text": "e: enter a cave"
+    },
+    {
+        "type": "paragraph",
+        "style": "List Paragraph",
+        "text": "x: exit the cave you are currently in"
+    },
+    {
+        "type": "paragraph",
+        "style": "List Paragraph",
+        "text": "t: find a treasure"
+    },
+    {
+        "type": "paragraph",
+        "style": "List Paragraph",
+        "text": "m: meet a monster"
+    },
+    {
+        "type": "paragraph",
+        "style": "Normal",
+        "text": "A diary is valid if all three rules hold:"
+    },
+    {
+        "type": "paragraph",
+        "style": "List Paragraph",
+        "text": "It consists of one or more complete caves in sequence. Every cave entered is exited, and you never exit without entering. Caves can be nested inside other caves."
+    },
+    {
+        "type": "paragraph",
+        "style": "List Paragraph",
+        "text": "Treasures and monsters occur only inside a cave."
+    },
+    {
+        "type": "paragraph",
+        "style": "List Paragraph",
+        "text": "Every cave contains at least one treasure found directly in it. A treasure found only inside a deeper nested cave doesn't count for the outer cave. Monsters can be met anywhere inside a cave."
+    },
+    {
+        "type": "paragraph",
+        "style": "Normal",
+        "text": "Valid: \"etx\", \"emtx\", \"etmtx\", \"etxetx\", \"eetxtx\", \"emetxtx\""
+    },
+    {
+        "type": "paragraph",
+        "style": "Normal",
+        "text": "Invalid: \"\", \"ex\", \"emx\", \"eetxx\", \"tx\", \"etxx\", \"etxm\""
+    },
+    {
+        "type": "paragraph",
+        "style": "Normal",
+        "text": "(a)  Construct a CFG for valid diaries. Explain the role of each non-terminal.  [5 marks]"
+    },
+    {
+        "type": "paragraph",
+        "style": "Normal",
+        "text": "(b)  Give a leftmost derivation and a parse tree for \"emetxtx\".  [2 marks]"
+    },
+    {
+        "type": "paragraph",
+        "style": "Normal",
+        "text": "(c)  A junior writes this grammar:  [3 marks]"
+    },
+    {
+        "type": "paragraph",
+        "style": "Normal",
+        "text": "D \u2192 C D | C"
+    },
+    {
+        "type": "paragraph",
+        "style": "Normal",
+        "text": "C \u2192 e X t X x"
+    },
+    {
+        "type": "paragraph",
+        "style": "Normal",
+        "text": "X \u2192 C X | t X | m X | \u03b5"
+    },
+    {
+        "type": "paragraph",
+        "style": "Normal",
+        "text": "Show that it is ambiguous by drawing two parse trees for \"ettx\". Then give an unambiguous grammar for the same language."
+    },
+    {
+        "type": "paragraph",
+        "style": "Normal",
+        "text": "(d)  Let L be the language of valid diaries. Prove L is not regular by intersecting it with e*(tx)* and applying the Pumping Lemma to the result.  [2 marks]"
+    },
+    {
+        "type": "paragraph",
+        "style": "Heading 1",
+        "text": "3. Pushdown Automata: The Apothecary's Cauldron (12 marks)"
+    },
+    {
+        "type": "paragraph",
+        "style": "Normal",
+        "text": "An apothecary logs what goes into a cauldron over \u03a3 = {h, m, a}:"
+    },
+    {
+        "type": "paragraph",
+        "style": "List Paragraph",
+        "text": "h: add a healing herb"
+    },
+    {
+        "type": "paragraph",
+        "style": "List Paragraph",
+        "text": "m: add a mandrake root"
+    },
+    {
+        "type": "paragraph",
+        "style": "List Paragraph",
+        "text": "a: add one drop of antidote"
+    },
+    {
+        "type": "paragraph",
+        "style": "Normal",
+        "text": "The cauldron is stable if every ingredient (h or m) is neutralised by exactly one antidote drop, i.e. #h + #m = #a. The order is free: the apothecary may pre-treat the cauldron with antidote before adding an ingredient, or add the antidote afterwards."
+    },
+    {
+        "type": "paragraph",
+        "style": "Normal",
+        "text": "Valid: \"ha\", \"ah\", \"hmaa\", \"aahm\", \"ahmaha\""
+    },
+    {
+        "type": "paragraph",
+        "style": "Normal",
+        "text": "Invalid: \"h\", \"aa\", \"hma\", \"ahhm\""
+    },
+    {
+        "type": "paragraph",
+        "style": "Normal",
+        "text": "(a)  Construct a PDA for stable logs and specify \u03b4. Note that the stack must handle the cauldron being \"ahead\" of antidote (ingredients waiting) and \"behind\" (antidote waiting).  [5 marks]"
+    },
+    {
+        "type": "paragraph",
+        "style": "Normal",
+        "text": "(b)  State whether your PDA accepts by final state or empty stack, and say whether it is deterministic. Justify both.  [2 marks]"
+    },
+    {
+        "type": "paragraph",
+        "style": "Normal",
+        "text": "(c)  Show the sequence of instantaneous descriptions (IDs) for \"ahmaha\" (accepted) and \"hma\" (rejected).  [3 marks]"
+    },
+    {
+        "type": "paragraph",
+        "style": "Normal",
+        "text": "(d)  A rival apothecary demands that the three counts be individually equal, so L\u2032 = { w | #h(w) = #m(w) = #a(w) }. Prove L\u2032 is not context-free by intersecting it with h*m*a* and applying the CFL Pumping Lemma to h\u1d56m\u1d56a\u1d56.  [2 marks]"
+    }
+]

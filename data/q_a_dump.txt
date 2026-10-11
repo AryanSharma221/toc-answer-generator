@@ -1,0 +1,172 @@
+Theory of Computation
+Questions with Worked Solutions
+Finite Automata  ·  Context-Free Grammars  ·  Pushdown Automata        Total: 36 marks
+1. Finite Automata: Time-Machine Paradox Checker (12 marks)
+A time machine logs every action over Σ = {p, f, h}:
+p: jump into the past
+f: jump into the future
+h: hold position
+A trip log is paradox-free if all three rules hold:
+A jump into the past is never immediately followed by a jump into the future. There is no "pf" substring, because the machine suffers temporal whiplash.
+The number of past-jumps is even. Otherwise a copy of the traveller is stranded in the past.
+The log ends with h, because the machine must be stationary to land.
+Valid: "h", "fh", "pph", "phph", "phfph"
+Invalid: "", "ph", "ppfh", "pphf", "pphp"
+(a)  Construct a DFA for paradox-free logs. Label every state with what it remembers, and include the dead state.  [4 marks]
+ANSWER
+To check the three rules, the DFA tracks three things: the parity of p's, whether the last symbol was p (to catch "pf"), and whether the last symbol was h (for the "must end with h" rule).
+Only B is accepting. Reading p flips the parity and moves to a "last was p" state. Reading f right after p goes to the dead state G.
+Figure 1. DFA for paradox-free logs (7 states, B accepting, G dead)
+Trace of "phfph": A →p F →h E →f D →p C →h B. This is accepted ✓.
+Trace of "ppfh": A →p F →p C →f G →h G. This is rejected ✓.
+(b)  Minimize your DFA using the table-filling method. How many states does the minimal DFA have?  [2 marks]
+ANSWER
+Round 0: B is accepting and everything else is not, so mark (B, every other state).
+Round 1: on h, the pairs (A,D), (A,E), (A,F), (A,G), (C,D), (C,E), (C,F) and (C,G) all lead to (B, non-B), which is already marked, so mark them.
+Round 2: (A,C) is marked, because on f it goes to (A,G). (D,G), (E,G) and (F,G) are marked, because on p they go to (C,G).
+Round 3: (D,F) and (E,F) are marked, because on f they go to (D,G) and (E,G).
+Left unmarked: only (D, E). They have identical transitions and are both non-accepting, so D ≡ E.
+The minimal DFA has 6 states: A, B, C, F, {D,E}, G.
+Figure 2. Minimal DFA (6 states) after merging D and E
+(c)  The regulator adds a stricter rule: every past-jump must be repaid by exactly one future-jump, with all past-jumps first, then all future-jumps, then a final hold. This gives L_rep = { pⁿ fⁿ h | n ≥ 1 }. Prove L_rep is not regular using the Pumping Lemma.  [4 marks]
+ANSWER
+Assume L_rep is regular with pumping length m. Take w = pᵐfᵐh, so |w| ≥ m. Split w = xyz with |xy| ≤ m and |y| ≥ 1.
+Since |xy| ≤ m, both x and y lie inside the p-block, so y = pᵏ with 1 ≤ k ≤ m. Pump with i = 2:
+xy²z = pᵐ⁺ᵏ fᵐ h
+This has more p's than f's, so it is not in L_rep. That contradicts the Pumping Lemma, so L_rep is not regular ∎
+(d)  A colleague claims L_bal = { w ∈ {p,f,h}* | #p(w) = #f(w) } is regular. Refute this using closure under intersection with p*f*.  [2 marks]
+ANSWER
+Intersect L_bal with the regular language p*f*:
+L_bal ∩ p*f* = { pⁿfⁿ | n ≥ 0 }
+This language is not regular, by the same pumping argument as in (c). Regular languages are closed under intersection, and p*f* is regular. If L_bal were regular, the intersection would be regular too, which is a contradiction. So L_bal is not regular ∎
+2. Context-Free Grammar: Treasure Hunter's Cave Diary (12 marks)
+An explorer's diary is written over Σ = {e, x, t, m}:
+e: enter a cave
+x: exit the cave you are currently in
+t: find a treasure
+m: meet a monster
+A diary is valid if all three rules hold:
+It consists of one or more complete caves in sequence. Every cave entered is exited, and you never exit without entering. Caves can be nested inside other caves.
+Treasures and monsters occur only inside a cave.
+Every cave contains at least one treasure found directly in it. A treasure found only inside a deeper nested cave doesn't count for the outer cave. Monsters can be met anywhere inside a cave.
+Valid: "etx", "emtx", "etmtx", "etxetx", "eetxtx", "emetxtx"
+Invalid: "", "ex", "emx", "eetxx", "tx", "etxx", "etxm"
+(a)  Construct a CFG for valid diaries. Explain the role of each non-terminal.  [5 marks]
+ANSWER
+D → C D | C
+C → e A t B x
+A → m A | C A | ε
+B → t B | m B | C B | ε
+The "A t B" shape forces every cave to have a direct treasure. The nested caves inside A and B are whole C's, so their treasures are never counted for the outer cave. This grammar is also unambiguous, as part (c) shows.
+(b)  Give a leftmost derivation and a parse tree for "emetxtx".  [2 marks]
+ANSWER
+Leftmost derivation
+D ⇒ C                          (D → C)
+  ⇒ e A t B x                  (C → e A t B x)
+  ⇒ e m A t B x                (A → m A)
+  ⇒ e m C A t B x              (A → C A)
+  ⇒ e m e A t B x A t B x      (C → e A t B x)
+  ⇒ e m e t B x A t B x        (A → ε)
+  ⇒ e m e t x A t B x          (B → ε)
+  ⇒ e m e t x t B x            (A → ε)
+  ⇒ e m e t x t x              (B → ε)
+Parse tree
+Figure 3. Parse tree for "emetxtx" (yield: e m e t x t x)
+(c)  A junior writes this grammar:  [3 marks]
+D → C D | C
+C → e X t X x
+X → C X | t X | m X | ε
+Show that it is ambiguous by drawing two parse trees for "ettx". Then give an unambiguous grammar for the same language.
+ANSWER
+For "ettx", the grammar can't tell which t is "the required treasure".
+Leftmost derivation 1 (first t is the required one):
+D ⇒ C ⇒ e X t X x ⇒ e t X x ⇒ e t t X x ⇒ e t t x
+Leftmost derivation 2 (second t is the required one):
+D ⇒ C ⇒ e X t X x ⇒ e t X t X x ⇒ e t t X x ⇒ e t t x
+The two derivations use different rules, so they give two different parse trees for the same string, and the grammar is ambiguous ∎
+Unambiguous replacement: the grammar from (a). In "e A t B x", A can never produce a direct t, so the t in the middle is always the first direct treasure. A and B each split the contents into items (m, t or a whole cave) in only one way. So every valid diary has exactly one parse tree.
+(d)  Let L be the language of valid diaries. Prove L is not regular by intersecting it with e*(tx)* and applying the Pumping Lemma to the result.  [2 marks]
+ANSWER
+Intersect L with the regular language e*(tx)*.
+A string e^a (tx)^b is balanced only when a = b, and a ≥ 1 is needed because the empty diary is invalid.
+Every such string is valid. In eⁿ(tx)ⁿ, the innermost cave contains a t, and each outer cave gets its own t right after the inner cave closes. For example, n = 2 gives "eetxtx".
+So L ∩ e*(tx)* = { eⁿ(tx)ⁿ | n ≥ 1 }.
+Assume this is regular with pumping length m, and take w = eᵐ(tx)ᵐ. Since |xy| ≤ m, y = eᵏ with k ≥ 1. Pumping gives eᵐ⁺ᵏ(tx)ᵐ, which has more e's than x's, so it is not in the language. That is a contradiction.
+Regular languages are closed under intersection with regular languages. If L were regular, the intersection would be regular. So L is not regular ∎
+3. Pushdown Automata: The Apothecary's Cauldron (12 marks)
+An apothecary logs what goes into a cauldron over Σ = {h, m, a}:
+h: add a healing herb
+m: add a mandrake root
+a: add one drop of antidote
+The cauldron is stable if every ingredient (h or m) is neutralised by exactly one antidote drop, i.e. #h + #m = #a. The order is free: the apothecary may pre-treat the cauldron with antidote before adding an ingredient, or add the antidote afterwards.
+Valid: "ha", "ah", "hmaa", "aahm", "ahmaha"
+Invalid: "h", "aa", "hma", "ahhm"
+(a)  Construct a PDA for stable logs and specify δ. Note that the stack must handle the cauldron being "ahead" of antidote (ingredients waiting) and "behind" (antidote waiting).  [5 marks]
+ANSWER
+The stack holds the "debt" in whichever direction it currently runs. It holds X's when ingredients are waiting for antidote, and Y's when antidote is waiting for ingredients.
+M = (Q, Σ, Γ, δ, q₀, Z₀, F), with Q = {q₀, q_X, q_Y}, Σ = {h, m, a}, Γ = {Z₀, X, Y}, F = {q₀}.
+q₀: balanced, stack = Z₀ only
+q_X: ingredients ahead
+q_Y: antidote ahead
+Below, c stands for either h or m.
+Figure 4. Transition diagram of the PDA (edge label: input, stack top / replacement)
+(b)  State whether your PDA accepts by final state or empty stack, and say whether it is deterministic. Justify both.  [2 marks]
+ANSWER
+It accepts by final state (q₀).
+Why not empty stack? The language is not prefix-free: "ha" ∈ L and "haha" ∈ L. A deterministic PDA that empties its stack after "ha" has nothing left to read the rest of "haha". Final-state acceptance avoids this.
+It is deterministic. For every (state, stack-top) pair, either only ε-moves exist or only input moves exist, with at most one move per symbol:
+(q₀, Z₀) has input moves only.
+(q_X, X) and (q_Y, Y) have input moves only.
+(q_X, Z₀) and (q_Y, Z₀) have a single ε-move only.
+(c)  Show the sequence of instantaneous descriptions (IDs) for "ahmaha" (accepted) and "hma" (rejected).  [3 marks]
+ANSWER
+Each ID is (state, remaining input, stack with top on the left).
+"ahmaha" (accepted)
+(q₀, ahmaha, Z₀)
+⊢ (q_Y, hmaha, Y Z₀)    rule 2
+⊢ (q_Y, maha,  Z₀)      rule 7  (h cancels the antidote)
+⊢ (q₀,  maha,  Z₀)      rule 8  (ε)
+⊢ (q_X, aha,   X Z₀)    rule 1
+⊢ (q_X, ha,    Z₀)      rule 4
+⊢ (q₀,  ha,    Z₀)      rule 5  (ε)
+⊢ (q_X, a,     X Z₀)    rule 1
+⊢ (q_X, ε,     Z₀)      rule 4
+⊢ (q₀,  ε,     Z₀)      rule 5  (ε)
+The input is consumed and the machine is in q₀ ∈ F, so it is accepted ✓.
+"hma" (rejected)
+(q₀, hma, Z₀)
+⊢ (q_X, ma, X Z₀)       rule 1
+⊢ (q_X, a,  X X Z₀)     rule 3
+⊢ (q_X, ε,  X Z₀)       rule 4
+The input is consumed in q_X, which is not final, and no ε-move applies with X on top. So it is rejected ✓.
+(d)  A rival apothecary demands that the three counts be individually equal, so L′ = { w | #h(w) = #m(w) = #a(w) }. Prove L′ is not context-free by intersecting it with h*m*a* and applying the CFL Pumping Lemma to hᵖmᵖaᵖ.  [2 marks]
+ANSWER
+Intersect L′ with the regular language h*m*a*:
+L′ ∩ h*m*a* = { hⁿmⁿaⁿ | n ≥ 0 }
+If L′ were context-free, this intersection would be too, because CFLs are closed under intersection with regular languages. Assume it is context-free with pumping length p, and take s = hᵖmᵖaᵖ. Split s = uvxyz with |vxy| ≤ p and |vy| ≥ 1.
+Between the last h and the first a there are p m's. A window of length ≤ p therefore cannot touch both an h and an a, so vxy misses at least one of the three letters.
+Pumping with i = 2 increases the count of at least one letter and leaves the count of the missed letter at p. The three counts are no longer equal.
+So uv²xy²z ∉ the language, which is a contradiction. Hence L′ is not context-free ∎
+State | Meaning | on p | on f | on h
+→ A | even #p, last symbol is neither p nor h (start, or just read f) | F | A | B
+B (accepting) | even #p, last symbol is h | F | A | B
+C | even #p, last symbol is p | F | G | B
+D | odd #p, last symbol is f | C | D | E
+E | odd #p, last symbol is h | C | D | E
+F | odd #p, last symbol is p | C | G | E
+G | dead (a "pf" has occurred) | G | G | G
+Non-terminal | Role
+D | the whole diary, one or more complete caves in sequence
+C | one cave: e, then contents, then x
+A | the stuff before the cave's first direct treasure: monsters and whole nested caves, but no direct t
+B | anything after that first direct treasure: t, m or whole caves
+ Tree 1: first t is the required treasure |  Tree 2: second t is the required treasure
+# | Transition | Meaning
+1 | δ(q₀, c, Z₀) = {(q_X, X Z₀)} | first ingredient from balance
+2 | δ(q₀, a, Z₀) = {(q_Y, Y Z₀)} | first antidote from balance
+3 | δ(q_X, c, X) = {(q_X, X X)} | another ingredient, push
+4 | δ(q_X, a, X) = {(q_X, ε)} | antidote cancels an ingredient, pop
+5 | δ(q_X, ε, Z₀) = {(q₀, Z₀)} | last X popped, back to balanced
+6 | δ(q_Y, a, Y) = {(q_Y, Y Y)} | another antidote, push
+7 | δ(q_Y, c, Y) = {(q_Y, ε)} | ingredient cancels an antidote, pop
+8 | δ(q_Y, ε, Z₀) = {(q₀, Z₀)} | last Y popped, back to balanced
